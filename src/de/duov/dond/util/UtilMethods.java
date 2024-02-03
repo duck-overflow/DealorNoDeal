@@ -1,14 +1,18 @@
 package de.duov.dond.util;
 
+import de.duov.dond.engine.DonDEngine;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UtilMethods {
-    private Scanner sc;
+    private final Scanner sc;
     private int DEAL;
+    private final DonDEngine ENGINE;
 
-    public UtilMethods() {
+    public UtilMethods(DonDEngine engine) {
         sc = new Scanner(System.in);
+        this.ENGINE = engine;
     }
 
     public int getNumber(final ArrayList<Integer> priceBox) {
@@ -74,10 +78,22 @@ public class UtilMethods {
         return dealGenerator(priceBox);
     }
 
-    private boolean dealGenerator(ArrayList<Integer> available) {
-        final int amount = available.size();
-        final int deal = 100;
+    public boolean dealGenerator(ArrayList<Integer> priceBox) {
+        final ArrayList<Integer> availabePrices = new ArrayList<>();
+        int total = 0;
+        int count = 0;
+        for (int i = 0; i < priceBox.size(); i++) {
+            if(!(priceBox.get(i) == 0)) {
+                availabePrices.add(i);
+                total += priceBox.get(i);
+                count++;
+            }
+        }
 
+        int deal = 0;
+        if(count > 0) {
+            deal = (total / count) / (7 - ENGINE.getCurrentRound());
+        }
         System.out.printf("Du hast nun die Möglichkeit weiterzuspielen oder den Deal anzunehmen." +
                 " Dieser beträgt %1d€. Möchtest du diesen Deal annehmen? <y|n>", deal);
         if(sc.next().equalsIgnoreCase("y")) {
